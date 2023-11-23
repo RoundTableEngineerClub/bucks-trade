@@ -1,10 +1,16 @@
+# python module
+import os
+
+# third party module
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
 from werkzeug.exceptions import abort
 
+# personal/private module
 from bucks.auth import login_required
 from bucks.db import get_db
+from werkzeug.utils import secure_filename
 
 bp = Blueprint('item', __name__)
 
@@ -32,8 +38,28 @@ def create():
             error = 'Title is required.'
         elif not body:
             error = 'Description is required.'
-        elif  not picture:
+        elif not picture:
             error = 'Picture is required.'
+
+        # for storing file into db
+        def allowed_file(filename):
+            return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ['ALLOWED_EXTENSIONS']
+
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('download_file', name=filename))
 
         if error is not None:
             flash(error)
