@@ -5,7 +5,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from flaskr.db import get_db
+from bucks.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -23,13 +23,13 @@ def register():
         elif not password:
             error = 'Password is required.'
         elif not contact:
-            error = 'Contact is required'
+            error = 'Contact is required.'
 
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (username, password, contact) VALUES (?, ?, ?)",
-                    (username, generate_password_hash(password), contact),
+                    "INSERT INTO user (username, password) VALUES (?, ?)",
+                    (username, generate_password_hash(password)),
                 )
                 db.commit()
             except db.IntegrityError:
