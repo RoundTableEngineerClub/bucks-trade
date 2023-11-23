@@ -3,7 +3,7 @@ import os
 
 # third party module
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, current_app
+    Blueprint, flash, g, redirect, render_template, request, url_for, current_app, send_from_directory
 )
 from werkzeug.exceptions import abort
 
@@ -31,15 +31,15 @@ def create():
         title = request.form['title']
         body = request.form['body']
         print(request.form)
-        picture = request.form['picture']
+        # picture = request.form['picture']
         error = None
 
         if not title:
             error = 'Title is required.'
         elif not body:
             error = 'Description is required.'
-        elif not picture:
-            error = 'Picture is required.'
+        # elif not picture:
+        #     error = 'Picture is required.'
 
         # for storing file into db
         def allowed_file(filename):
@@ -47,19 +47,24 @@ def create():
            filename.rsplit('.', 1)[1].lower() in ['ALLOWED_EXTENSIONS']
 
         # check if the post request has the file part
-        if 'file' not in request.files:
+        if 'picture' not in request.files:
             flash('No file part')
             return redirect(request.url)
-        file = request.files['file']
+        picture = request.files['picture']
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
-        if file.filename == '':
+        print(request.files)
+        if picture.filename == '':
             flash('No selected file')
             return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        if picture and allowed_file(picture.filename):
+            filename = secure_filename(picture.filename)
+            picture.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('download_file', name=filename))
+
+        # @current_app.route('/uploads/<name>')
+        def download_file(name):
+            return send_from_directory(current_app.config["UPLOAD_FOLDER"], name)
 
         if error is not None:
             flash(error)

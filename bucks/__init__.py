@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, request
 
 
 def create_app(test_config=None):
@@ -41,5 +41,11 @@ def create_app(test_config=None):
     from . import item
     app.register_blueprint(item.bp)
     app.add_url_rule('/', endpoint='index')
+
+    app.add_url_rule(
+    "/uploads/<name>", endpoint="download_file", build_only=True
+    )
+
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
     return app
