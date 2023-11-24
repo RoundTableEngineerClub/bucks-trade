@@ -88,19 +88,33 @@ def update(id):
 
         picture = request.files['picture']
         if picture:
-                picture.save(os.path.join(current_app.config['UPLOAD'], picture.filename))
+            picture.save(os.path.join(current_app.config['UPLOAD'], picture.filename))
 
-        if error is not None:
-            flash(error)
+            if error is not None:
+                flash(error)
+            else:
+                db = get_db()
+                db.execute(
+                    'UPDATE post SET title = ?, body = ?, picture = ?'
+                    ' WHERE id = ?',
+                    (title, body, picture.filename, id)
+                )
+                db.commit()
+                return redirect(url_for('item.index'))
+            
         else:
-            db = get_db()
-            db.execute(
-                'UPDATE post SET title = ?, body = ?, picture = ?'
-                ' WHERE id = ?',
-                (title, body, picture.filename, id)
-            )
-            db.commit()
-            return redirect(url_for('item.index'))
+            if error is not None:
+                flash(error)
+            else:
+                db = get_db()
+                db.execute(
+                    'UPDATE post SET title = ?, body = ?'
+                    ' WHERE id = ?',
+                    (title, body, id)
+                )
+                db.commit()
+                return redirect(url_for('item.index'))
+            
 
     return render_template('item/update.html', post=post)
 
