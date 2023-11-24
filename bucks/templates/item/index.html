@@ -20,6 +20,7 @@
         {% endif %}
       </header>
       <p class="body">{{ post['body'] }}</p>
+      <img src="{{ url_for('item.picture', id=post['id']) }}">
     </article>
     {% if not loop.last %}
       <hr>
