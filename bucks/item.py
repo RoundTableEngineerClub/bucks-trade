@@ -41,15 +41,7 @@ def create():
         # for storing file into db
         picture = request.files['picture']
         filename = secure_filename(picture.filename)
-        print(os.getcwd())
-        print(os.path.join(current_app.config['UPLOAD'], filename))
         picture.save(os.path.join(current_app.config['UPLOAD'], filename))
-        
-        img = os.path.join(current_app.config['UPLOAD'], filename)
-        return render_template('item/index.html', img=img)
-    
-        if __name__ == '__main__':
-            app.run(debug=True, port=8001)
 
         if error is not None:
             flash(error)
@@ -58,11 +50,10 @@ def create():
             db.execute(
                 'INSERT INTO post (title, body, picture, author_id, contact)'
                 ' VALUES (?, ?, ?, ?, ?)',
-                (title, body, picture, g.user['id'], g.user['contact'])
+                (title, body, picture.filename, g.user['id'], g.user['contact'])
             )
             db.commit()
             return redirect(url_for('item.index'))
-
     return render_template('item/create.html')
 
 def get_post(id, check_author=True):
