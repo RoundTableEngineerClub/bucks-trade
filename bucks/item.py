@@ -110,5 +110,5 @@ def delete(id):
 
 @bp.route('/<int:id>/picture')
 def picture(id):
-    post = get_post(id)
+    post = get_post(id, check_author=False)
     return send_from_directory(current_app.config['UPLOAD'], post['picture'])
