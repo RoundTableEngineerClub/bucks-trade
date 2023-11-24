@@ -14,9 +14,9 @@
     <form action="{{ url_for('item.create') }}" enctype="multipart/form-data" method="POST">
       <input name="picture" type="file" />
       <input type="submit"/>
- </form>
+    </form>
   </form>
-  <hr>
+  <hr>  
   <form action="{{ url_for('item.delete', id=post['id']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
   </form>

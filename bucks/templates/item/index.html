@@ -18,9 +18,11 @@
         {% if g.user['id'] == post['author_id'] %}
           <a class="action" href="{{ url_for('item.update', id=post['id']) }}">Edit</a>
         {% endif %}
+        <a class="action" href="{{ url_for('item.postDetail', id=post['id']) }}">See All</a>
       </header>
-      <p class="body">{{ post['body'] }}</p>
-      <img src="{{ url_for('item.picture', id=post['id']) }}">
+      
+      <!--<p class="body">{{ post['body'] }}</p>
+      <img src="{{ url_for('item.picture', id=post['id']) }}">-->
     </article>
     {% if not loop.last %}
       <hr>

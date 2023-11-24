@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Details of post{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <article class="post">
+    <header>
+      <div>
+        <h1>{{ result['title'] }}</h1>
+        <div class="about"><h2>by {{ result['username'] }} on {{ result['created'].strftime('%Y-%m-%d') }}</h2></div>
+      </div>
+      </header>
+        <h2 for="body">Body</h2>
+        <p class="body">{{ result['body'] }}</p>
+        <h2 for="picture">Picture</h2>
+        <p>
+        <img src="{{ url_for('item.picture', id=result['id']) }}">
+        </p>
+        <h2 for="contact">Contact Information</h2>
+        <p class="contact">{{ result['contact'] }}</p>
+        <a class="action" href="/">Back to item list.</a>
+  </article>
+{% endblock %}

@@ -18,7 +18,7 @@ bp = Blueprint('item', __name__)
 def index():
     db = get_db()
     posts = db.execute(
-        'SELECT p.id, title, body, created, author_id, username, picture'
+        'SELECT p.id, title, body, created, author_id, username, picture, u.contact'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
@@ -47,9 +47,9 @@ def create():
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO post (title, body, picture, author_id, contact)'
-                ' VALUES (?, ?, ?, ?, ?)',
-                (title, body, picture.filename, g.user['id'], g.user['contact'])
+                'INSERT INTO post (title, body, picture, author_id)'
+                ' VALUES (?, ?, ?, ?)',
+                (title, body, picture.filename, g.user['id'])
             )
             db.commit()
             return redirect(url_for('item.index'))
@@ -117,6 +117,25 @@ def update(id):
             
 
     return render_template('item/update.html', post=post)
+
+@bp.route('/<int:id>/postDetail', methods=('GET',))
+@login_required
+def postDetail(id):
+    error = None
+    
+    if error is not None:
+        flash(error)
+    else:
+        db = get_db()
+        result = db.execute(
+            'SELECT p.id, title, body, created, author_id, username, picture, u.contact'
+            ' FROM post p JOIN user u ON p.author_id = u.id'
+            ' WHERE p.id = ?',
+            (id,)
+        ).fetchone()
+            
+
+    return render_template('item/postDetail.html', result=result)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
