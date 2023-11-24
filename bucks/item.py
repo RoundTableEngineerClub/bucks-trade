@@ -30,7 +30,6 @@ def create():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        print(request.form)
         error = None
 
         if not title:
@@ -84,15 +83,21 @@ def update(id):
 
         if not title:
             error = 'Title is required.'
+        elif not body:
+            error = 'Description is required.'
+
+        picture = request.files['picture']
+        if picture:
+                picture.save(os.path.join(current_app.config['UPLOAD'], picture.filename))
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'UPDATE post SET title = ?, body = ?'
+                'UPDATE post SET title = ?, body = ?, picture = ?'
                 ' WHERE id = ?',
-                (title, body, id)
+                (title, body, picture.filename, id)
             )
             db.commit()
             return redirect(url_for('item.index'))
