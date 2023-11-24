@@ -31,40 +31,25 @@ def create():
         title = request.form['title']
         body = request.form['body']
         print(request.form)
-        # picture = request.form['picture']
         error = None
 
         if not title:
             error = 'Title is required.'
         elif not body:
             error = 'Description is required.'
-        # elif not picture:
-        #     error = 'Picture is required.'
-
+     
         # for storing file into db
-        def allowed_file(filename):
-            return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ['ALLOWED_EXTENSIONS']
-
-        # check if the post request has the file part
-        if 'picture' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
         picture = request.files['picture']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        print(request.files)
-        if picture.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if picture and allowed_file(picture.filename):
-            filename = secure_filename(picture.filename)
-            picture.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-
-        # @current_app.route('/uploads/<name>')
-        def download_file(name):
-            return send_from_directory(current_app.config["UPLOAD_FOLDER"], name)
+        filename = secure_filename(picture.filename)
+        print(os.getcwd())
+        print(os.path.join(current_app.config['UPLOAD'], filename))
+        picture.save(os.path.join(current_app.config['UPLOAD'], filename))
+        
+        img = os.path.join(current_app.config['UPLOAD'], filename)
+        return render_template('item/index.html', img=img)
+    
+        if __name__ == '__main__':
+            app.run(debug=True, port=8001)
 
         if error is not None:
             flash(error)

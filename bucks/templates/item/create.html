@@ -10,8 +10,12 @@
     <input name="title" id="title" value="{{ request.form['title'] }}" required>
     <label for="body">Description</label>
     <textarea name="body" id="body">{{ request.form['body'] }}</textarea>
-    <label for="picture">Picture</label>
+    <!--<label for="picture">Picture</label>
     <input type="file" id="picture" name="picture">
-    <input type="submit" value="Save">
+    <input type="submit" value="Save">-->
+    <form action="{{ url_for('item.create') }}" enctype="multipart/form-data" method="POST">
+        <input name="picture" type="file"/>
+        <input type="submit"/>
+   </form>
   </form>
 {% endblock %}

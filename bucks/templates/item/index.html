@@ -20,10 +20,11 @@
         {% if g.user['id'] == post['author_id'] %}
           <a class="action" href="{{ url_for('item.update', id=post['id']) }}">Edit</a>
         {% endif %}
-      </header>
-      <p class="body">{{ post['body'] }}</p>
-       <!--ID FOR PICTURE NEED TO BE CHANGED LATER-->
-      <img id="picture" src="{{post['picture']}}" alt="picture" />
+        </header>
+        <p class="body">{{ post['body'] }}</p>
+        <!--ID FOR PICTURE NEED TO BE CHANGED LATER-->
+        <!--<img id="picture" src="{{post['picture']}}" alt="picture" />-->
+        <img src="{{picture}}">
     </article>
     {% if not loop.last %}
       <hr>

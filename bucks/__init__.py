@@ -1,6 +1,7 @@
 import os
 
-from flask import Flask, request
+from flask import Flask, request, render_template
+from werkzeug.utils import secure_filename
 
 
 def create_app(test_config=None):
@@ -10,8 +11,8 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
         # how to change the path for upload_folder??
-        UPLOAD_FOLDER = '/static/images',
-        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+        # UPLOAD_FOLDER = '/static/images',
+        # ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     )
 
     if test_config is None:
@@ -42,10 +43,19 @@ def create_app(test_config=None):
     app.register_blueprint(item.bp)
     app.add_url_rule('/', endpoint='index')
 
+    '''
     app.add_url_rule(
     "/uploads/<name>", endpoint="download_file", build_only=True
     )
 
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
+    '''
+
+    upload_folder = os.path.join('images')
+ 
+    app.config['UPLOAD'] = os.path.join(app.instance_path, upload_folder)
+ 
+    if __name__ == '__main__':
+        app.run(debug=True, port=8001)
 
     return app
